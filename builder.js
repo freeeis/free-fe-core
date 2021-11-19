@@ -2,6 +2,8 @@
  * A chance to extend the core functions
  */
 export default () => {
+  const buildConfig = () => {}
+
   const buildComponents = () => {
   }
 
@@ -32,6 +34,7 @@ export default () => {
   }
 
   return {
+    buildConfig,
     buildComponents,
     buildPages,
     buildRoutes,
