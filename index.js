@@ -249,9 +249,11 @@ export default {
         }
 
         if (rc.ref) {
-          return Object.merge(extend(true, [], realRouters), rc);
+          return Object.merge(realRouters, rc);
+          // return Object.merge(extend(true, [], realRouters), rc);
         }
-        return extend(true, [], realRouters);
+        return realRouters;
+        // return extend(true, [], realRouters);
       }
       if (rc.children) {
         for (let i = 0; i < rc.children.length; i += 1) {

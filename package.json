@@ -5,6 +5,6 @@
   "main": "index.js",
   "author": "zhiquan",
   "license": "GPL-1.0-or-later",
-  "repository": "git@github.com:free-be/free-fe-core.git",
+  "repository": "git@github.com:freeeis/free-fe-core.git",
   "private": false
 }
