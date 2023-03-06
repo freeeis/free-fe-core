@@ -1,6 +1,6 @@
 import { defineAsyncComponent } from 'vue';
 import freeBuilder from './builder';
-import { extend } from 'quasar';
+// import { extend } from 'quasar';
 
 export default {
   init: (ctx) => {
@@ -25,7 +25,8 @@ export default {
       routes: [],
     };
 
-    const {
+    let builderLoaded = false;
+    let {
       buildConfig,
       buildComponents,
       buildPages,
@@ -34,7 +35,7 @@ export default {
       buildValidators,
       buildStore,
       buildForConfig,
-      buildI18n } = (config.builder ? config.builder : freeBuilder)({ ...ctx, freeApp: app });
+      buildI18n } = {};
 
     // all configurations stored in app.config, include config for each module
     // which will overwrite the config in the module itself.
@@ -126,6 +127,21 @@ export default {
       }
 
       if (!mdl && !freeMdl) throw new Error(`Failed to load module: ${m}`);
+
+      if (!builderLoaded) {
+        ({
+          buildConfig,
+          buildComponents,
+          buildPages,
+          buildRoutes,
+          buildActions,
+          buildValidators,
+          buildStore,
+          buildForConfig,
+          buildI18n } = (config.builder ? config.builder : freeBuilder)({ ...ctx, freeApp: app }));
+
+          builderLoaded = true;
+      }
 
       mdl = mdl || {};
       freeMdl = freeMdl || {};
@@ -269,7 +285,7 @@ export default {
       const mdl = app.modules[app.moduleNames[i]];
       Object.merge(mdl.config, app.config[app.moduleNames[i]] || {});
       app.config[app.moduleNames[i]] = mdl.config || {};
-      
+
       mdl.routers = mdl.routers || [];
       let mRouters = mdl.routers;
 
@@ -352,9 +368,7 @@ export default {
       i18nMessages[ik] = { ...i18nMessages[ik], ...config.i18n[ik] };
     });
 
-    if (ctx.store) {
-      ctx.store.i18nMessages = i18nMessages;
-    }
+    ctx.app.i18nMessages = i18nMessages;
 
     // get route list from module routers and merge config
     let routes = [];

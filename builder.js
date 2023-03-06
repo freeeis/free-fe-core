@@ -26,6 +26,9 @@
   const buildForConfig = () => {
 
   }
+  const buildConfig = () => {
+
+  }
 
   const buildI18n = () => {
 
@@ -39,6 +42,7 @@
     buildValidators,
     buildStore,
     buildForConfig,
+    buildConfig,
     buildI18n,
   }
 }
