@@ -4,7 +4,7 @@
  * 
  * @Author: zhiquan <x.zhiquan@gmail.com>
  * @Date: 2021-08-03 09:16:39
- * @LastEditTime: 2023-03-08 09:24:01
+ * @LastEditTime: 2023-03-09 12:11:40
  * @LastEditors: zhiquan
  */
 
@@ -61,7 +61,7 @@ export default {
       if (!n || !v) return;
 
       let filter = app.filters[n];
-      filter = filter.func || filter;
+      filter = filter && (filter.func || filter);
       if (typeof filter  === 'function') {
         return filter(...v);
       }
