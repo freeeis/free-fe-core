@@ -4,7 +4,7 @@
  * 
  * @Author: zhiquan <x.zhiquan@gmail.com>
  * @Date: 2021-08-03 09:16:39
- * @LastEditTime: 2023-03-09 12:11:40
+ * @LastEditTime: 2023-03-21 18:58:39
  * @LastEditors: zhiquan
  */
 
@@ -182,6 +182,10 @@ export default {
           }
         }
       }
+      
+      // merge config
+      mdl.config = { ...mdl.config, ...app.config[m] };
+      app.config[m] = { ...mdl.config };
 
       // register global filters from module
       if (mdl.filters) {
