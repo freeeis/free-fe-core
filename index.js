@@ -1,10 +1,10 @@
 /*
  * @Description: According to the configuration and the dependency relationships, load all the modules.
  * Include module configurations, module i18n dictionaries, routers, mocks etc.
- * 
+ *
  * @Author: zhiquan <x.zhiquan@gmail.com>
  * @Date: 2021-08-03 09:16:39
- * @LastEditTime: 2023-03-21 18:58:39
+ * @LastEditTime: 2023-03-28 18:49:32
  * @LastEditors: zhiquan
  */
 
@@ -55,7 +55,13 @@ export default {
     // to the dependency relationship, etc.
     rootApp.config.globalProperties.ctx = app;
     rootApp.config.globalProperties.getModule = (n) => {
-      return app.modules[n];
+      return app.modules[n] || (()=>{
+        const objMdl = app.config.modules.find((om) => (typeof om === 'object') && (om.original === n));
+
+        if (objMdl) {
+          return app.modules[objMdl.name];
+        }
+      })();
     };
     rootApp.config.globalProperties.$filter = (n, ...v) => {
       if (!n || !v) return;
@@ -124,10 +130,25 @@ export default {
     const i18nMessages = {};
 
     const loadModule = (m) => {
-      if (app.modules[m]) return app.modules[m];
+      let mName;
+      let mOriginal;
 
-      let mdl = CustomerModules[m] || localModules[m] || globalModules[m];
-      let freeMdl = CustomerFreeJSModules[m] || CustomerFreeModules[m] || localFreeJSModules[m] || localFreeModules[m] || globalFreeJSModules[m] || globalFreeModules[m];
+      if (typeof m === 'string') {
+        mName = m;
+        mOriginal = m;
+      } else if (typeof m === 'object') {
+        mName = m.name;
+        mOriginal = m.original || m.name;
+
+        if (!mOriginal) {
+          throw `module ${m.name} is not found!`;
+        }
+      }
+
+      if (app.modules[mName]) return app.modules[mName];
+
+      let mdl = CustomerModules[mOriginal] || localModules[mOriginal] || globalModules[mOriginal];
+      let freeMdl = CustomerFreeJSModules[mOriginal] || CustomerFreeModules[mOriginal] || localFreeJSModules[mOriginal] || localFreeModules[mOriginal] || globalFreeJSModules[mOriginal] || globalFreeModules[mOriginal];
 
       if (typeof mdl === 'function') {
         mdl = mdl(app, rootApp);
@@ -163,7 +184,7 @@ export default {
 
       buildConfig(mdl);
 
-      app.modules[m] = mdl;
+      app.modules[mName] = mdl;
       mdl.app = app;
 
       // check dependencies
@@ -174,18 +195,20 @@ export default {
           const dep = mdl.config.dependencies[i];
 
           if(typeof dep === 'object') {
-            const depMdl = loadModule(dep.name);
+            const depMdl = loadModule(dep.original ? dep : dep.name);
 
-            depMdl.config = Object.assign({}, depMdl.config, dep.config);
+            if (depMdl) {
+              depMdl.config = Object.assign({}, depMdl.config, dep.config);
+            }
           } else {
             loadModule(dep);
           }
         }
       }
-      
+
       // merge config
-      mdl.config = { ...mdl.config, ...app.config[m] };
-      app.config[m] = { ...mdl.config };
+      mdl.config = { ...mdl.config, ...app.config[mName] };
+      app.config[mName] = { ...mdl.config };
 
       // register global filters from module
       if (mdl.filters) {
@@ -206,7 +229,7 @@ export default {
       }
 
       // register module i18n translates
-      let i18nMdl = CustomerI18nModules[m] || localI18nModules[m] || globalI18nModules[m];
+      let i18nMdl = CustomerI18nModules[mOriginal] || localI18nModules[mOriginal] || globalI18nModules[mOriginal];
 
       if (i18nMdl) {
         Object.keys(i18nMdl).forEach(ik => {
@@ -214,8 +237,8 @@ export default {
         });
       }
 
-      if (app.moduleNames.indexOf(m) < 0) {
-        app.moduleNames.push(m);
+      if (app.moduleNames.indexOf(mName) < 0) {
+        app.moduleNames.push(mName);
       }
 
       // check backend modules for development env
@@ -388,8 +411,11 @@ export default {
     // get route list from module routers and merge config
     let routes = [];
     for (let i = 0; i < app.config.modules.length; i += 1) {
-      const mdl = app.modules[app.config.modules[i]];
-      if (mdl.routers && (!app.config.rootModule || app.config.modules[i] === app.config.rootModule)) {
+      const mdli = app.config.modules[i];
+      const mdlName = typeof mdli === 'string' ? mdli : mdli.name;
+
+      const mdl = app.modules[mdlName];
+      if (mdl && mdl.routers && (!app.config.rootModule || mdlName === app.config.rootModule)) {
         routes = routes.concat(mdl.routers);
       }
     }
