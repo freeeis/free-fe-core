@@ -55,7 +55,7 @@ export default {
     // to the dependency relationship, etc.
     rootApp.config.globalProperties.ctx = app;
     rootApp.config.globalProperties.getModule = (n) => {
-      return app.modules[n] || (()=>{
+      return app.modules[n] || (() => {
         const objMdl = app.config.modules.find((om) => (typeof om === 'object') && (om.original === n));
 
         if (objMdl) {
@@ -68,7 +68,7 @@ export default {
 
       let filter = app.filters[n];
       filter = filter && (filter.func || filter);
-      if (typeof filter  === 'function') {
+      if (typeof filter === 'function') {
         return filter(...v);
       }
     };
@@ -318,29 +318,6 @@ export default {
       return rc;
     };
 
-    // load routers from modules
-    for (let i = 0; i < app.moduleNames.length; i += 1) {
-      const mdl = app.modules[app.moduleNames[i]];
-      Object.merge(mdl.config, app.config[app.moduleNames[i]] || {});
-      app.config[app.moduleNames[i]] = mdl.config || {};
-
-      mdl.routers = mdl.routers || [];
-      let mRouters = mdl.routers;
-
-      // routes from code
-      if (typeof mRouters === 'function') {
-        mRouters = mRouters(app, mdl, store);
-      }
-      if (mRouters && Array.isArray(mRouters)) {
-        buildRoutes(mdl, mRouters);
-        for (let j = 0; j < mRouters.length; j += 1) {
-          mRouters[j] = addRefRouters(mRouters[j]);
-        }
-      }
-
-      mdl.routers = mRouters;
-    }
-
     const modifyModuleView = (routers, view, p = '') => {
       for (let i = 0; i < routers.length; i += 1) {
         const router = routers[i];
@@ -357,9 +334,29 @@ export default {
       }
     };
 
-    // register components in modules
+    // process with each module
     for (let i = 0; i < app.moduleNames.length; i += 1) {
       const mdl = app.modules[app.moduleNames[i]];
+
+      Object.merge(mdl.config, app.config[app.moduleNames[i]] || {});
+      app.config[app.moduleNames[i]] = mdl.config || {};
+
+      // load routers from modules
+      mdl.routers = mdl.routers || [];
+      let mRouters = mdl.routers;
+
+      // routes from code
+      if (typeof mRouters === 'function') {
+        mRouters = mRouters(app, mdl, store);
+      }
+      if (mRouters && Array.isArray(mRouters)) {
+        buildRoutes(mdl, mRouters);
+        for (let j = 0; j < mRouters.length; j += 1) {
+          mRouters[j] = addRefRouters(mRouters[j]);
+        }
+      }
+
+      mdl.routers = mRouters;
 
       // register components in modules
       if (mdl.components) {
@@ -406,6 +403,10 @@ export default {
       i18nMessages[ik] = { ...i18nMessages[ik], ...config.i18n[ik] };
     });
 
+    if (ctx.store) {
+      ctx.store.i18nMessages = i18nMessages;
+    }
+    
     ctx.app.i18nMessages = i18nMessages;
 
     // get route list from module routers and merge config
