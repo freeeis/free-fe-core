@@ -66,11 +66,33 @@ export default {
     rootApp.config.globalProperties.$filter = (n, ...v) => {
       if (!n || !v) return;
 
-      let filter = app.filters[n];
-      filter = filter && (filter.func || filter);
-      if (typeof filter === 'function') {
-        return filter(...v);
+      let fnList = [];
+      if (!Array.isArray(n)) {
+        if (typeof n === 'function') {
+          fnList.push(n);
+        } else if (typeof n === 'string') {
+          fnList = fnList.concat(n.trim().split(','));
+        }
+      } else {
+        fnList = n;
       }
+
+      let oV = v;
+
+      for (let i = 0; i <  fnList.length; i += 1) {
+        const fn = fnList[i];
+        if (typeof fn === 'function') {
+          oV = fn(...oV);
+        } else if (typeof fn === 'string') {
+          let filter = app.filters[fn];
+          filter = filter && (filter.func || filter);
+          if (typeof filter === 'function') {
+            oV = filter(...oV);
+          }
+        }
+      }
+
+      return Array.isArray(oV) ? oV[0] : oV;
     };
 
     // load modules from local modules folder
