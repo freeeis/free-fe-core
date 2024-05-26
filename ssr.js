@@ -134,19 +134,19 @@ export default {
     };
 
     const localModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/free-fe-[^/]+\/index\.js$/));
-    const globalModules = loadModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/index\.js$/));
+    const globalModules = {}; // loadModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/index\.js$/));
     const CustomerModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/[^/]+\/index\.js$/), './', 'free-fe-');
 
     const localFreeModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/free-fe-[^/]+\/_freemodule\.json$/), './free-fe-', '', '_freemodule.json');
-    const globalFreeModules = loadModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/_freemodule\.json$/), './free-fe-', '', '_freemodule.json');
+    const globalFreeModules = {}; // loadModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/_freemodule\.json$/), './free-fe-', '', '_freemodule.json');
     const CustomerFreeModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/[^/]+\/_freemodule\.json$/), './', 'free-fe-', '_freemodule.json');
 
     const localFreeJSModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/free-fe-[^/]+\/_freemodule\.js$/), './free-fe-', '', '_freemodule.js');
-    const globalFreeJSModules = loadModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/_freemodule\.js$/), './free-fe-', '', '_freemodule.js');
+    const globalFreeJSModules = {}; // loadModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/_freemodule\.js$/), './free-fe-', '', '_freemodule.js');
     const CustomerFreeJSModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/[^/]+\/_freemodule\.js$/), './', 'free-fe-', '_freemodule.js');
 
     const localI18nModules = loadI18nModulesFromFolder(require.context('../../src/modules', true, /\/free-fe-[^/]+\/i18n\/[^/]+\/[^/]+\.js$/));
-    const globalI18nModules = loadI18nModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/i18n\/[^/]+\/[^/]+\.js$/));
+    const globalI18nModules = {}; // loadI18nModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/i18n\/[^/]+\/[^/]+\.js$/));
     const CustomerI18nModules = loadI18nModulesFromFolder(require.context('../../src/modules', true, /\/[^/]+\/i18n\/[^/]+\/[^/]+\.js$/), './', 'free-fe-');
 
     const i18nMessages = {};
