@@ -1,6 +1,6 @@
 {
   "name": "free-fe-core",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The core module for frontend of the FreeEIS system.",
   "main": "index.js",
   "author": "zhiquan",
