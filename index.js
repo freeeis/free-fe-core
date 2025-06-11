@@ -159,7 +159,9 @@ export default {
 
     // load modules
     const localModules = loadModulesWithGlob(
-      import.meta.glob('../../src/modules/free-fe-*/index.js', { eager: true }),
+      import.meta.glob('/src/modules/free-fe-*/index.js', { eager: true }),
+      '/src/modules/free-fe-',
+      ''
     )
     const globalModules = loadModulesWithGlob(
       import.meta.glob('/node_modules/free-fe-*/index.js', { eager: true }),
@@ -167,15 +169,15 @@ export default {
       '',
     )
     const CustomerModules = loadModulesWithGlob(
-      import.meta.glob('../../src/modules/*/index.js', { eager: true }),
-      './',
+      import.meta.glob('/src/modules/*/index.js', { eager: true }),
+      '/src/modules/',
       'free-fe-',
     )
 
     // load free modules defined in _freemodule.json
     const localFreeModules = loadModulesWithGlob(
-      import.meta.glob('../../src/modules/free-fe-*/_freemodule.json', { eager: true }),
-      './free-fe-',
+      import.meta.glob('/src/modules/free-fe-*/_freemodule.json', { eager: true }),
+      '/src/modules/free-fe-',
       '',
       '_freemodule.json',
     )
@@ -186,16 +188,16 @@ export default {
       '_freemodule.json',
     )
     const CustomerFreeModules = loadModulesWithGlob(
-      import.meta.glob('../../src/modules/*/_freemodule.json', { eager: true }),
-      './',
+      import.meta.glob('/src/modules/*/_freemodule.json', { eager: true }),
+      '/src/modules/',
       'free-fe-',
       '_freemodule.json',
     )
 
     // load free modules defined in _freemodule.js
     const localFreeJSModules = loadModulesWithGlob(
-      import.meta.glob('../../src/modules/free-fe-*/_freemodule.js', { eager: true }),
-      './free-fe-',
+      import.meta.glob('/src/modules/free-fe-*/_freemodule.js', { eager: true }),
+      '/src/modules/free-fe-',
       '',
       '_freemodule.js',
     )
@@ -206,15 +208,17 @@ export default {
       '_freemodule.js',
     )
     const CustomerFreeJSModules = loadModulesWithGlob(
-      import.meta.glob('../../src/modules/*/_freemodule.js', { eager: true }),
-      './',
+      import.meta.glob('/src/modules/*/_freemodule.js', { eager: true }),
+      '/src/modules/',
       'free-fe-',
       '_freemodule.js',
     )
 
     // load i18n modules
     const localI18nModules = loadModulesWithGlob(
-      import.meta.glob('../../src/modules/free-fe-*/i18n/*/*.js', { eager: true }),
+      import.meta.glob('/src/modules/free-fe-*/i18n/*/*.js', { eager: true }),
+      '/src/modules/free-fe-',
+      '',
     )
     const globalI18nModules = loadModulesWithGlob(
       import.meta.glob('/node_modules/free-fe-*/i18n/*/*.js', { eager: true }),
@@ -222,8 +226,8 @@ export default {
       '',
     )
     const CustomerI18nModules = loadModulesWithGlob(
-      import.meta.glob('../../src/modules/*/i18n/*.js', { eager: true }),
-      './',
+      import.meta.glob('/src/modules/*/i18n/*.js', { eager: true }),
+      '/src/modules/',
       'free-fe-',
     )
 
