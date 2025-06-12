@@ -157,6 +157,28 @@ export default {
       return localModules
     }
 
+    function loadI18nModulesWithGlob(matchedModules, pre = './free-fe-', ext = '') {
+      const localI18nModules = {}
+      Object.keys(matchedModules).forEach((path) => {
+        if (!ext || path.indexOf(ext) < 0) {
+          const mn = path.substring(
+            path.indexOf(pre) + pre.length,
+            path.indexOf('/', path.indexOf(pre) + pre.length),
+          )
+          if (path.startsWith(`${pre}${mn}/i18n/`)) {
+            const i18nMatch = path
+              .substring(`${pre}${mn}/i18n/`.length)
+              .match(/([^/]+)\/index\.js/)
+            if (i18nMatch && i18nMatch[1]) {
+              localI18nModules[mn] = localI18nModules[mn] || {}
+              localI18nModules[mn][i18nMatch[1]] = matchedModules[path].default || matchedModules[path]
+            }
+          }
+        }
+      })
+      return localI18nModules
+    }
+
     // load modules
     const localModules = loadModulesWithGlob(
       import.meta.glob('/src/modules/free-fe-*/index.js', { eager: true }),
@@ -215,37 +237,21 @@ export default {
     )
 
     // load i18n modules
-    const localI18nModules = loadModulesWithGlob(
-      import.meta.glob('/src/modules/free-fe-*/i18n/*/*.js', { eager: true }),
+    const localI18nModules = loadI18nModulesWithGlob(
+      import.meta.glob('/src/modules/free-fe-*/i18n/*/index.js', { eager: true }),
       '/src/modules/free-fe-',
       '',
     )
-    const globalI18nModules = loadModulesWithGlob(
-      import.meta.glob('/node_modules/free-fe-*/i18n/*/*.js', { eager: true }),
+    const globalI18nModules = loadI18nModulesWithGlob(
+      import.meta.glob('/node_modules/free-fe-*/i18n/*/index.js', { eager: true }),
       '/node_modules/free-fe-',
       '',
     )
-    const CustomerI18nModules = loadModulesWithGlob(
-      import.meta.glob('/src/modules/*/i18n/*.js', { eager: true }),
+    const CustomerI18nModules = loadI18nModulesWithGlob(
+      import.meta.glob('/src/modules/*/i18n/*/index.js', { eager: true }),
       '/src/modules/',
       'free-fe-',
     )
-
-    // const localModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/free-fe-[^/]+\/index\.js$/));
-    // const globalModules = loadModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/index\.js$/));
-    // const CustomerModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/[^/]+\/index\.js$/), './', 'free-fe-');
-
-    // const localFreeModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/free-fe-[^/]+\/_freemodule\.json$/), './free-fe-', '', '_freemodule.json');
-    // const globalFreeModules = loadModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/_freemodule\.json$/), './free-fe-', '', '_freemodule.json');
-    // const CustomerFreeModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/[^/]+\/_freemodule\.json$/), './', 'free-fe-', '_freemodule.json');
-
-    // const localFreeJSModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/free-fe-[^/]+\/_freemodule\.js$/), './free-fe-', '', '_freemodule.js');
-    // const globalFreeJSModules = loadModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/_freemodule\.js$/), './free-fe-', '', '_freemodule.js');
-    // const CustomerFreeJSModules = loadModulesFromFolder(require.context('../../src/modules', true, /\/[^/]+\/_freemodule\.js$/), './', 'free-fe-', '_freemodule.js');
-
-    // const localI18nModules = loadI18nModulesFromFolder(require.context('../../src/modules', true, /\/free-fe-[^/]+\/i18n\/[^/]+\/[^/]+\.js$/));
-    // const globalI18nModules = loadI18nModulesFromFolder(require.context('../../node_modules', true, /\/free-fe-[^/]+\/i18n\/[^/]+\/[^/]+\.js$/));
-    // const CustomerI18nModules = loadI18nModulesFromFolder(require.context('../../src/modules', true, /\/[^/]+\/i18n\/[^/]+\/[^/]+\.js$/), './', 'free-fe-');
 
     const i18nMessages = {}
 
